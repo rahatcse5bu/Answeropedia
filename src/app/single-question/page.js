@@ -67,8 +67,8 @@ const question=   {
     
   return (
     <div>
-      <div className="flex flex-row align-middle items-center justify-center">
-        <div className="main-content w-full col-span-3 p-4 mr-4">
+      <div className="flex flex-row align-middle items-center justify-center w-[80%] mx-auto">
+        <div className="main-content w--full col-span-3 p-4 mr-4">
           <h3 className="text-2xl my-4">
             {question.questionTitle}
           </h3>
