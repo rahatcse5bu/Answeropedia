@@ -45,7 +45,7 @@ const AnswerItem = ({ answer }) => {
       <div className="answer p-2 my-4 border rounded-md">
         <div className="ans-author flex flex-row items-start justify-start">
           <div className="h-8 w-8 border bg-[#1E3A8A] text-white font-medium rounded-full text-center align-middle">
-            {answer.answerAuthor[0]}
+            {answer.answerAuthor[0].toUpperCase()}
           </div>
           <div className="author-name">
             <h5 className="font-medium ml-3">{answer.answerAuthor}</h5>
@@ -58,19 +58,19 @@ const AnswerItem = ({ answer }) => {
         <UpDown upVotes={answer.answerUpVotes} downVotes={answer.answerDownVotes} />
         <div className="answer-content">
           <p className="text-gray-700 p-2">{answer.answerContent}</p>
-          <div
+          {/* <div
             className="cursor-pointer px-4 py-2 bg-slate-700 rounded-lg"
             onClick={() => toggleReply()}
           >
             {" "}
             Hello Toggle
-          </div>
+          </div> */}
         </div>
-        <div className="bg-green-300 p-4">
+        {/* <div className="bg-green-300 p-4">
           {my_users.map((user,index)=>{
           return (<p key={index}>{user.username}</p>);
         })}
-        </div>
+        </div> */}
       </div>
 
     </div>
