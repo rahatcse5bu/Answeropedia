@@ -1,8 +1,13 @@
+'use client'
+import { setIsAddQuestion } from '@/store/slices/questions/QuestionSlices';
 import Image from 'next/image';
 import Link from 'next/link';
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Header = () => {
+  const dispatch = useDispatch();
+  const is_add_question = useSelector((state)=>state.question.isAddQuestion);
     return  (
         <nav className="flex items-center justify-between px-4 py-8 max-w-5xl w-80% mx-auto bg-gray--200 border-b border-b-gray-400 shadow-md">
           {/* Logo */}
@@ -22,6 +27,7 @@ const Header = () => {
     
           {/* Right Section */}
           <div className="flex items-center space-x-4">
+            <div onClick={()=>dispatch(setIsAddQuestion(!is_add_question))} className=" bg-slate-700 px-4 py-2 rounded-xl cursor-pointer text-white hover:text-gray-900">Add Question</div>
             <Link href="/login" className="text-gray-700 hover:text-gray-900">Login</Link>
             <Link href="/register" className="text-gray-700 hover:text-gray-900">Register</Link>
            

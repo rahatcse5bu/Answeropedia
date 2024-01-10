@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // import { HYDRATE } from "next-redux-wrapper";
 const initialState ={
     authState: false,
+    users: []
 }
 // Actual Slice
 export const authSlice = createSlice({
@@ -11,23 +12,21 @@ export const authSlice = createSlice({
     // Action to set the authentication status
     setAuthState: (state, action) => {
       return {
+        ...state,
         authState: action.payload
+      }
+    },
+    setAuthUsers: (state, action) => {
+      return {
+        ...state,
+        users: action.payload
       }
     },
   },
 
-  // Special reducer for hydrating the state. Special case for next-redux-wrapper
-//   extraReducers: {
-//     [HYDRATE]: (state, action) => {
-//       return {
-//         ...state,
-//         ...action.payload.auth,
-//       };
-//     },
-//   },
 });
 
-export const { setAuthState } = authSlice.actions;
+export const { setAuthState,setAuthUsers } = authSlice.actions;
 
 export const selectAuthState = (state) => state.auth.authState;
 

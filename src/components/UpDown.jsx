@@ -1,10 +1,11 @@
 'use client'
+import { setIsReply } from "@/store/slices/questions/QuestionSlices";
 import React from "react";
-// import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const UpDown = ({upVotes,downVotes,views=0}) => {
-    // const isReplyFormOpen = useSelector((state)=>state.isReply);
-    // const dispatch = useDispatch();
+    const isReplyFormOpen = useSelector((state)=>state.question.isReply);
+    const dispatch = useDispatch();
   return (
     <div>
       <div className="up-down-views-section grid grid-cols-6 gap-4 align-middle items-center">
@@ -51,12 +52,20 @@ const UpDown = ({upVotes,downVotes,views=0}) => {
         </div>
         <div className="right col-span-3">
           <div className="grid grid-cols-4 gap-4 py-2 text-white">
-            <div className="bg-[#1E3A8A]  px-4 py-2 cursor-pointer rounded-lg">Reply</div>
+            <div onClick={()=>dispatch(setIsReply(!isReplyFormOpen))} className="bg-[#1E3A8A]  px-4 py-2 cursor-pointer rounded-lg">Reply</div>
             <div className="bg-[#1E3A8A] px-4 py-2 cursor-pointer rounded-lg">Edit</div>
           </div>
-          {/* {isReplyFormOpen.toString()} */}
+
         </div>
       </div>
+      {isReplyFormOpen &&(
+            <div className="px-4 py-2 rounded-xl">
+              <textarea rows={8} cols={100} className="opacity-100 transition-opacity duration-900 ease-in-out border border-gray-300 rounded-lg my-2 mx-4"></textarea>
+              <div className="flex flex-row items-end justify-end">
+                <button className="bg-slate-900 text-white px-4 py-2 rounded-lg">Reply</button>
+              </div>
+              </div>
+          )}
     </div>
   );
 };
