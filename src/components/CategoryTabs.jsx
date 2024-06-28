@@ -12,7 +12,7 @@ const CategoryTabs = ({categories}) => {
     return (
         <div>
         <div className="category-tab grid grid-cols-4  gap-4 my-4">
-            {categories.map((category,index)=>{
+            {categories?.map((category,index)=>{
                 return (<CategoryItem category={category} key={index}/>)
             })}
        

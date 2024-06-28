@@ -4,6 +4,7 @@ const initialState ={
     isAddQuestion: false,
     questionTitle:'',
     questions: [],
+    singleQuestion:[]
 }
 // Actual Slice
 export const questionSlice = createSlice({
@@ -32,11 +33,16 @@ export const questionSlice = createSlice({
         questions: action.payload
       }
     },
+    setGlobalSingleQuestion: (state, action) => {
+      return {
+        singleQuestion: action.payload
+      }
+    },
   },
 
 });
 
-export const { setIsReply,setIsAddQuestion,setQuestionTitle,setAllQuestions } = questionSlice.actions;
+export const { setIsReply,setIsAddQuestion,setQuestionTitle,setAllQuestions, setGlobalSingleQuestion } = questionSlice.actions;
 
 
 // export const selectIsReply = (state) => state.question.isReply;

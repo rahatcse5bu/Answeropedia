@@ -3,12 +3,13 @@ import {
   setIsAddQuestion,
   setQuestionTitle,
 } from "@/store/slices/questions/QuestionSlices";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { ThreeDots } from 'react-loader-spinner'
 
 const AddQuestion = () => {
     const [isQuestionAdded,setIsQuestionAdded]= useState(null);
+    const [author,setAuthor]=useState('');
   const dispatch = useDispatch();
   const title = useSelector((state) => state.question.questionTitle);
   const handleAddQuestion = async() =>  {
@@ -21,9 +22,9 @@ const AddQuestion = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           questionTitle: title,
-          questionAuthor: "rahatcse555555bu",
+          questionAuthor: author,
         }),
-      }).then(() => {
+      }).then((data) => {
         setIsQuestionAdded(true)
          fetchQuestion();
       });
@@ -44,31 +45,10 @@ const AddQuestion = () => {
     }
       );
 }
+useEffect(()=>{
+setAuthor(window.localStorage.getItem('username'))
+},[author])
   return (
-    // <div className="add-question px-4 py-4 my-2">
-    //   <div className="my-2 flex flex-col items-center justify-end">
-    //     <label className="text-lg">Question Title</label>
-    //     <input
-    //       className=""
-    //       onChange={(e) => dispatch(setQuestionTitle(e.target.value))}
-    //       type="text" value={title}
-    //       placeholder="What is the capital of Bangladesh?"
-    //     />
-    //   </div>
-    //   <div className="my-2 flex flex-col items-center justify-end">
-    //     <label className="text-lg">Question Description</label>
-    //     <textarea
-    //       className="" value={description}
-    //       onChange={(e) => dispatch(setQuestionDescription(e.target.value))}
-    //       rows={8} cols={100}
-    //       placeholder="What is the capital of Bangladesh?"
-    //     ></textarea>
-    //   </div>
-    //   <div className="flex flex-row items-center justify-end">
-    //     <button className="bg-slate-700 text-white rounded-xl px-4 py-2" onClick={()=>alert("Coming Soon!")}>Add Question</button>
-    //   </div>
-    // </div>
-
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40">
       <div className="add-question bg-white px-4 py-4 my-2 rounded-lg shadow-lg w-[60%] mx-auto">
         <div className="my-2 flex flex-col items-start justify-end">

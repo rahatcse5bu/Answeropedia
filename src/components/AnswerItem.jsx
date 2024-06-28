@@ -4,8 +4,9 @@ import { setAuthState,setAuthUsers } from "../store/authSlice";
 import { setIsReply } from "@/store/slices/questions/QuestionSlices";
 // import { useAppSelector, useAppDispatch } from '../store/hooks';
 import { useDispatch, useSelector } from "react-redux";
+import { ReadableDateTime } from "@/app/functions/DateTime";
 
-const AnswerItem = ({ answer }) => {
+const AnswerItem = ({q_id, answer }) => {
   //  console.log(answer)
   const dispatch = useDispatch();
   const authState = useSelector((state) => state.auth.authState);
@@ -39,40 +40,29 @@ const AnswerItem = ({ answer }) => {
   };
   return (
     <div
-      onClick={() => dispatch(setAuthState(!authState))}
-      className="bg-green--700"
+      
+      className=""
     >
       <div className="answer p-2 my-4 border rounded-md">
-        <div className="ans-author flex flex-row items-start justify-start">
-          <div className="h-8 w-8 border bg-[#1E3A8A] text-white font-medium rounded-full text-center align-middle">
-            {answer.answerAuthor[0].toUpperCase()}
+        <div className="ans-author flex flex-row items-center justify-start">
+          <div className="h-8 w-8 border bg-[#1E3A8A] text-white font-medium rounded-full text-center align-middle flex items-center justify-center">
+            {answer?.answerAuthor && answer?.answerAuthor[0].toUpperCase()}
           </div>
-          <div className="author-name">
-            <h5 className="font-medium ml-3">{answer.answerAuthor}</h5>
+          <div className="author-name ml-3">
+            <h5 className="font-medium ">{answer.answerAuthor}</h5>
             <p className="text-sm text-gray-600 mt-1">
-              Member since {answer.answerDate}
+              Answered on <ReadableDateTime isoString={answer.answerDate} /> 
             </p>
           </div>
         </div>
         {/* end author section  */}
-        <UpDown upVotes={answer.answerUpVotes} downVotes={answer.answerDownVotes} />
+
         <div className="answer-content">
           <p className="text-gray-700 p-2">{answer.answerContent}</p>
-          {/* <div
-            className="cursor-pointer px-4 py-2 bg-slate-700 rounded-lg"
-            onClick={() => toggleReply()}
-          >
-            {" "}
-            Hello Toggle
-          </div> */}
         </div>
-        {/* <div className="bg-green-300 p-4">
-          {my_users.map((user,index)=>{
-          return (<p key={index}>{user.username}</p>);
-        })}
-        </div> */}
+        <UpDown upvoteUsers={answer.upvoteUsers} downvoteUsers={answer.downvoteUsers} q_id={q_id} ans_id={answer._id} upVotes={answer.answerUpVotes} downVotes={answer.answerDownVotes} />
       </div>
-
+      {answer._id}
     </div>
   );
 };

@@ -1,3 +1,40 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.highlight-container {
+    width: 98%;
+    max-width: 100rem;
+    margin: 12rem auto;
+    margin-bottom: 5rem;
+  }
+  
+  .form-group-custom {
+    position: relative;
+  }
+  
+  .form-group-custom label {
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #fff;
+    color: #000;
+    font-size: 1.6rem;
+  }
+  .form-group-custom label span.red {
+    color: red;
+  }
+  
+  .form-group-custom input {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    border: 1px solid gray;
+    outline: none;
+    color: #000;
+    background-color: #FFF;
+    font-size: 1.6rem;
+    width:100%;
+    
+  }

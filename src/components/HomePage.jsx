@@ -4,7 +4,7 @@ import QuestionCards from './QuestionCards';
 import { useDispatch, useSelector } from 'react-redux';
 import AddQuestion from './AddQuestion';
 import { setAllQuestions } from '@/store/slices/questions/QuestionSlices';
-
+import { ThreeDots } from 'react-loader-spinner'
 const HomePage = () => {
     const dispatch = useDispatch();
     const is_add_question = useSelector((state)=>state.question.isAddQuestion);
@@ -16,7 +16,7 @@ const fetchQuestion =()=>{
     .then((response) => response.json())
     .catch((error) => console.log("Error: ", error))
     .then((data) => {
-      console.log('questions =>',JSON.stringify(data));
+    //   console.log('questions =>',JSON.stringify(data));
       dispatch(setAllQuestions(data));
     }
       );

@@ -1,71 +1,240 @@
-'use client'
-import { setIsReply } from "@/store/slices/questions/QuestionSlices";
-import React from "react";
+"use client";
+import { fetchSingleQuestion } from "@/app/functions/questions/fetchQuestion";
+import {
+  setGlobalSingleQuestion,
+  setIsReply,
+} from "@/store/slices/questions/QuestionSlices";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { FaRegThumbsUp, FaRegThumbsDown } from "react-icons/fa";
+// import { FaRegThumbsDown } from "react-icons/fa";
 
-const UpDown = ({upVotes,downVotes,views=0}) => {
-    const isReplyFormOpen = useSelector((state)=>state.question.isReply);
-    const dispatch = useDispatch();
+const UpDown = ({
+  upvoteUsers = [],
+  downvoteUsers = [],
+  q_id = "",
+  ans_id = "",
+  upVotes,
+  downVotes,
+  views = 0,
+  isEdit = false,
+  isAnswer = true,
+}) => {
+  const isReplyFormOpen = useSelector((state) => state.question.isReply);
+  // const [q_id,setId]=useState(null)
+  const [userAnswer, setUserAnswer] = useState("");
+  const [isAnswerAdded, setIsAnswerAdded] = useState(false);
+  const dispatch = useDispatch();
+  const single_question = useSelector((state) => state.question.singleQuestion);
+  const [author, setAuthor] = useState("");
+  const [user_email, setUserEmail] = useState("");
+  const handleAddAnswer = (q_id) => {
+    const upvote_api =
+      "https://rahat-question-answer.vercel.app/api/v1/questions/answers/" +
+      q_id;
+    setIsAnswerAdded(false);
+    if (userAnswer) {
+      // alert(add_answer_to_question_api_endpoint)
+      fetch(upvote_api, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          answerContent: userAnswer,
+          answerAuthor: author,
+        }),
+      }).then(async (data) => {
+        // alert(data.status);
+        if (data.status === 200 || data.status === 201) {
+          const single_data = await fetchSingleQuestion(q_id);
+
+          dispatch(setGlobalSingleQuestion(single_data));
+          setUserAnswer("");
+          setIsAnswerAdded(true);
+          // isReplyFormOpen(false)
+        } else {
+          alert("Error" + data.status);
+        }
+
+        //  fetchQuestion();
+      });
+    } else {
+      setIsAnswerAdded(false);
+      alert("Please fill out all fields");
+    }
+  };
+  const handleAddUpVote = () => {
+    let upvote_api =
+      "https://rahat-question-answer.vercel.app/api/v1/questions/answers/:qid/aid";
+    // https://rahat-question-answer.vercel.app/api/v1/questions/answers/:qid/aid
+    if (isAnswer) {
+      //means it's from answer section, we need to upvote for ans
+      upvote_api =
+        "https://rahat-question-answer.vercel.app/api/v1/questions/answers/" +
+        q_id +
+        "/" +
+        ans_id;
+    } else {
+      upvote_api =
+        "https://rahat-question-answer.vercel.app/api/v1/questions/votes/" +
+        q_id;
+    }
+    // const add_upvote_to_question_api_endpoint ="https://rahat-question-answer.vercel.app/api/v1/questions/votes/"+id;
+    setIsAnswerAdded(false);
+    // alert(upvote_api)
+    fetch(upvote_api, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "upvote",
+        email: user_email,
+      }),
+    }).then(async (data) => {
+      // alert(data.status);
+      if (data.status === 200 || data.status === 201) {
+        const single_data = await fetchSingleQuestion(q_id);
+        // alert(JSON.stringify(data));
+        // alert(JSON.stringify(single_data))
+        dispatch(setGlobalSingleQuestion(single_data));
+      } else {
+        alert("Error" + data.status);
+      }
+    });
+  };
+  const handleDownUpVote = () => {
+    let downvote_api =
+      "https://rahat-question-answer.vercel.app/api/v1/questions/answers/:qid/aid";
+    // https://rahat-question-answer.vercel.app/api/v1/questions/answers/:qid/aid
+    if (isAnswer) {
+      //means it's from answer section, we need to upvote for ans section
+      downvote_api =
+        "https://rahat-question-answer.vercel.app/api/v1/questions/answers/" +
+        q_id +
+        "/" +
+        ans_id;
+    } else {
+      downvote_api =
+        "https://rahat-question-answer.vercel.app/api/v1/questions/votes/" +
+        q_id;
+    }
+    // const add_upvote_to_question_api_endpoint ="https://rahat-question-answer.vercel.app/api/v1/questions/votes/"+id;
+    setIsAnswerAdded(false);
+    // alert(upvote_api)
+    fetch(downvote_api, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "downvote",
+        email: user_email,
+      }),
+    }).then(async (data) => {
+      // alert(data.status);
+      if (data.status === 200 || data.status === 201) {
+        const single_data = await fetchSingleQuestion(q_id);
+        // alert(JSON.stringify(data));
+        // alert(JSON.stringify(single_data))
+        dispatch(setGlobalSingleQuestion(single_data));
+      } else {
+        alert("Error" + data.status);
+      }
+    });
+  };
+  //   useEffect(()=>{
+  // setId(q_id);
+  // // console.log("single ",JSON.stringify(single_question))
+  //   },[q_id,single_question])
+  useEffect(() => {
+    setAuthor(window.localStorage.getItem("username"));
+    setUserEmail(window.localStorage.getItem("userEmail"));
+  }, [author, user_email]);
   return (
     <div>
       <div className="up-down-views-section grid grid-cols-6 gap-4 align-middle items-center">
-        <div className="left flex flex-row col-span-3 py-2 px-4 items-center ">
-          <div className="up-down grid grid-cols-2 gap-3 mx-4 border border-gray-400 rounded-lg px-4 py-2">
-            <div className="up flex flex-row items-center cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6 mr-2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M6.633 10.25c.806 0 1.533-.446 2.031-1.08a9.041 9.041 0 0 1 2.861-2.4c.723-.384 1.35-.956 1.653-1.715a4.498 4.498 0 0 0 .322-1.672V2.75a.75.75 0 0 1 .75-.75 2.25 2.25 0 0 1 2.25 2.25c0 1.152-.26 2.243-.723 3.218-.266.558.107 1.282.725 1.282m0 0h3.126c1.026 0 1.945.694 2.054 1.715.045.422.068.85.068 1.285a11.95 11.95 0 0 1-2.649 7.521c-.388.482-.987.729-1.605.729H13.48c-.483 0-.964-.078-1.423-.23l-3.114-1.04a4.501 4.501 0 0 0-1.423-.23H5.904m10.598-9.75H14.25M5.904 18.5c.083.205.173.405.27.602.197.4-.078.898-.523.898h-.908c-.889 0-1.713-.518-1.972-1.368a12 12 0 0 1-.521-3.507c0-1.553.295-3.036.831-4.398C3.387 9.953 4.167 9.5 5 9.5h1.053c.472 0 .745.556.5.96a8.958 8.958 0 0 0-1.302 4.665c0 1.194.232 2.333.654 3.375Z"
-                />
-              </svg>
-              {upVotes}
+        <div className="left flex flex-row col-span-3 py-2 pr-4 items-center ">
+          <div className="up-down grid grid-cols-2 gap-3 mr-4 border border-gray-400 rounded-lg px-4 py-2">
+            <div
+              onClick={() => handleAddUpVote()}
+              className="up flex flex-row items-center justify-center cursor-pointer"
+            >
+              <span className="mr-[2px]">{upvoteUsers.length}</span>
+              {!upvoteUsers.includes(user_email) && <FaRegThumbsUp size={20} />}
+              {upvoteUsers.includes(user_email) && (
+                <FaRegThumbsUp color="#0000FF" stroke="#0000FF" fill="#0000FF" size={20} />
+              )}
             </div>
-            <div className="down flex flex-row items-center cursor-pointer">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-                className="w-6 h-6 mr-2"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M7.498 15.25H4.372c-1.026 0-1.945-.694-2.054-1.715a12.137 12.137 0 0 1-.068-1.285c0-2.848.992-5.464 2.649-7.521C5.287 4.247 5.886 4 6.504 4h4.016a4.5 4.5 0 0 1 1.423.23l3.114 1.04a4.5 4.5 0 0 0 1.423.23h1.294M7.498 15.25c.618 0 .991.724.725 1.282A7.471 7.471 0 0 0 7.5 19.75 2.25 2.25 0 0 0 9.75 22a.75.75 0 0 0 .75-.75v-.633c0-.573.11-1.14.322-1.672.304-.76.93-1.33 1.653-1.715a9.04 9.04 0 0 0 2.86-2.4c.498-.634 1.226-1.08 2.032-1.08h.384m-10.253 1.5H9.7m8.075-9.75c.01.05.027.1.05.148.593 1.2.925 2.55.925 3.977 0 1.487-.36 2.89-.999 4.125m.023-8.25c-.076-.365.183-.75.575-.75h.908c.889 0 1.713.518 1.972 1.368.339 1.11.521 2.287.521 3.507 0 1.553-.295 3.036-.831 4.398-.306.774-1.086 1.227-1.918 1.227h-1.053c-.472 0-.745-.556-.5-.96a8.95 8.95 0 0 0 .303-.54"
-                />
-              </svg>
-              {downVotes}
+            <div
+              onClick={() => {
+                handleDownUpVote();
+              }}
+              className="down flex flex-row items-center justify-center cursor-pointer"
+            >
+              {!downvoteUsers.includes(user_email) && (
+                <FaRegThumbsDown size={20} />
+              )}
+              {downvoteUsers.includes(user_email) && (
+                <FaRegThumbsDown color="#0000FF" stroke="#0000FF" fill="#0000FF" size={20} />
+              )}
+              <span className="ml-[2px]"> {downvoteUsers.length}</span>
             </div>
           </div>
           <div className="views">
-            <h4 className="">{views} Views</h4>
+            {!isAnswer && <h4 className="">{views} Views</h4>}
           </div>
         </div>
         <div className="right col-span-3">
           <div className="grid grid-cols-4 gap-4 py-2 text-white">
-            <div onClick={()=>dispatch(setIsReply(!isReplyFormOpen))} className="bg-[#1E3A8A]  px-4 py-2 cursor-pointer rounded-lg">Reply</div>
-            <div className="bg-[#1E3A8A] px-4 py-2 cursor-pointer rounded-lg">Edit</div>
+            {isAnswer && (
+              <div
+                onClick={() => dispatch(setIsReply(!isReplyFormOpen))}
+                className="bg-[#1E3A8A]  px-4 py-2 cursor-pointer rounded-lg"
+              >
+                Reply
+              </div>
+            )}
+            {/* if isAnswer is not true, then reply will be shown  */}
+            {!isAnswer && (
+              <div
+                onClick={() => dispatch(setIsReply(!isReplyFormOpen))}
+                className="bg-[#1E3A8A]  px-4 py-2 cursor-pointer rounded-lg"
+              >
+                Answer
+              </div>
+            )}
+            {isEdit && (
+              <div className="bg-[#1E3A8A] px-4 py-2 cursor-pointer rounded-lg">
+                Edit
+              </div>
+            )}
           </div>
-
         </div>
       </div>
-      {isReplyFormOpen &&(
-            <div className="px-4 py-2 rounded-xl">
-              <textarea rows={8} cols={100} className="opacity-100 transition-opacity duration-900 ease-in-out border border-gray-300 rounded-lg my-2 mx-4"></textarea>
-              <div className="flex flex-row items-end justify-end">
-                <button className="bg-slate-900 text-white px-4 py-2 rounded-lg">Reply</button>
-              </div>
-              </div>
-          )}
+      {isReplyFormOpen && q_id && (
+        <div className="px-4 py-2 rounded-xl">
+          <textarea
+            onChange={(e) => setUserAnswer(e.target.value)}
+            rows={8}
+            cols={100}
+            className="opacity-100 transition-opacity duration-900 ease-in-out border border-gray-300 rounded-lg my-2 mx-4"
+          ></textarea>
+          <div className="flex flex-row items-end justify-end">
+            {isAnswerAdded && (
+              <button
+                disabled
+                className="bg-slate-900 text-white px-4 py-2 rounded-lg"
+              >
+                {isAnswer && "Reply Added"} {!isAnswer && "Answer Added"}
+              </button>
+            )}
+            {!isAnswerAdded && q_id && (
+              <button
+                onClick={(e) => handleAddAnswer(q_id)}
+                className="bg-slate-900 text-white px-4 py-2 rounded-lg cursor-pointer"
+              >
+                {isAnswer && "Add Reply"} {!isAnswer && "Add Answer"}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

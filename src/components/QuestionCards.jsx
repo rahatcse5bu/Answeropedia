@@ -92,11 +92,11 @@ const QuestionCards = () => {
   return (
     <div className="w-full">
 
-      {all_questions.length>0 && all_questions.map((question, index) => {
+      {all_questions?.length>0 && all_questions.map((question, index) => {
         return(<QuestionCard key={index} data={question} />);
       })}
 
-      {all_questions.length<=0 && (
+      {all_questions?.length<=0 && (
 <div className="flex flex-row items-center justify-center">
 <Bars
             visible={true}
